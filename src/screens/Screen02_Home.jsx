@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
-import { Search, QrCode, ArrowUpRight, ArrowDownRight, AlertTriangle, ShieldCheck, GitCommit, ChevronRight, Layers } from 'lucide-react';
+import { Search, QrCode, ArrowUpRight, ArrowDownRight, AlertTriangle, ShieldCheck, GitCommit, ChevronRight, Layers, X, ArrowRight, Zap } from 'lucide-react';
 import ProfileModal from '../components/ProfileModal';
 
-export default function Screen02_Home({ onNavigate }) {
+export default function Screen02_Home({ onNavigate, setQueryAddress }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [homeSearchInput, setHomeSearchInput] = useState('');
+
+  const quickForensicChips = [
+    { label: 'Mixer Outflow', query: '0x7a3fc894726e9c9d2e4b0113f89', icon: '⚡' },
+    { label: 'Silk Road BTC', query: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', icon: '₿' },
+    { label: 'Lazarus TxID', query: '0x4c3a1e9f2b8d0c1e5a7b9d3f6a2c8e4b1d0f5e9a', icon: '🔗' },
+    { label: 'Tor Node IP', query: '185.220.101.5', icon: '🌐' },
+  ];
+
+  const handleExecuteHomeSearch = (query) => {
+    const target = query || homeSearchInput.trim();
+    if (target) {
+      if (setQueryAddress) setQueryAddress(target);
+    }
+    onNavigate(3);
+  };
 
   const investigations = [
     {
@@ -81,15 +97,80 @@ export default function Screen02_Home({ onNavigate }) {
       {/* Mandatory Profile Information Modal */}
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
-      {/* Global Search Bar */}
-      <div className="home-search-bar" onClick={() => onNavigate(3)} id="home-search-trigger">
-        <Search size={16} color="#64748b" />
-        <span className="home-search-input-placeholder">
-          Search TxID, wallet, IP or domain...
-        </span>
-        <button className="home-search-qr-btn" onClick={(e) => { e.stopPropagation(); onNavigate(3); }}>
-          <QrCode size={18} color="#64748b" />
-        </button>
+      {/* Global Interactive Search Bar */}
+      <div
+        className="home-search-bar"
+        onClick={() => handleExecuteHomeSearch()}
+        id="home-search-trigger"
+      >
+        <Search size={17} color="#2563eb" style={{ flexShrink: 0 }} />
+        <input
+          type="text"
+          className="home-search-real-input"
+          placeholder="Search TxID, wallet, IP or domain..."
+          value={homeSearchInput}
+          onChange={(e) => setHomeSearchInput(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleExecuteHomeSearch();
+            }
+          }}
+          id="home-search-real-input"
+        />
+        {homeSearchInput.length > 0 && (
+          <button
+            className="home-search-clear-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              setHomeSearchInput('');
+            }}
+            title="Clear search"
+          >
+            <X size={15} />
+          </button>
+        )}
+        {homeSearchInput.length > 0 ? (
+          <button
+            className="home-search-go-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleExecuteHomeSearch();
+            }}
+            title="Search"
+          >
+            <ArrowRight size={15} strokeWidth={2.5} />
+          </button>
+        ) : (
+          <button
+            className="home-search-qr-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigate(3);
+            }}
+            title="Scan QR Code"
+          >
+            <QrCode size={18} color="#64748b" />
+          </button>
+        )}
+      </div>
+
+      {/* Quick Forensic Preset Tags */}
+      <div className="home-quick-tags" style={{ marginTop: '-4px', marginBottom: '2px' }}>
+        {quickForensicChips.map((chip, idx) => (
+          <button
+            key={idx}
+            className="home-quick-tag-chip"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleExecuteHomeSearch(chip.query);
+            }}
+          >
+            <span>{chip.icon}</span>
+            <span>{chip.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* 2x2 Metric Cards Grid */}

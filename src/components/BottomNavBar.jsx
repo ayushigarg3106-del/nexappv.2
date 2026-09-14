@@ -1,10 +1,10 @@
 import React from 'react';
-import { Home, ScanLine, GitFork, FileText, Menu } from 'lucide-react';
+import { Home, Search, GitFork, FileText, Menu } from 'lucide-react';
 
 export default function BottomNavBar({ currentScreen, onNavigate }) {
   const tabs = [
     { id: 2, label: 'Home', icon: Home },
-    { id: 3, label: 'Scan', icon: ScanLine },
+    { id: 3, label: 'Search', icon: Search },
     { id: 11, label: 'Graph', icon: GitFork },
     { id: 10, label: 'Reports', icon: FileText },
     { id: 6, label: 'More', icon: Menu },

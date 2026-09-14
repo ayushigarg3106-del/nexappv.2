@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Share2, GitBranch, AlertOctagon, CheckCircle2, ChevronRight, ExternalLink } from 'lucide-react';
 
-export default function Screen05_Result({ onNavigate }) {
+export default function Screen05_Result({ onNavigate, queryAddress }) {
   const [activeTab, setActiveTab] = useState('Summary');
 
   const flaggedReasons = [
@@ -11,6 +11,24 @@ export default function Screen05_Result({ onNavigate }) {
     '2-hop risk connection',
     'Matched known pattern (Peeling Chain)',
   ];
+
+  const target = queryAddress || '0x7a3fc894726e9c9d2e4b0113f89';
+  const isBtc = target.startsWith('bc1') || target.startsWith('1') || target.startsWith('3');
+  const isIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(target);
+  const isTx = target.length > 45;
+
+  let chainLabel = 'Ethereum (ERC-20)';
+  let cryptoIcon = '⚡';
+  if (isBtc) {
+    chainLabel = 'Bitcoin (UTXO)';
+    cryptoIcon = '₿';
+  } else if (isIp) {
+    chainLabel = 'Tor / P2P Relay';
+    cryptoIcon = '🌐';
+  } else if (isTx) {
+    chainLabel = 'Hex Tx Hash';
+    cryptoIcon = '🔗';
+  }
 
   return (
     <div className="screen-result">
@@ -30,12 +48,14 @@ export default function Screen05_Result({ onNavigate }) {
 
       {/* Target Entity Card */}
       <div className="target-entity-card" onClick={() => onNavigate(9)} title="View Address Details">
-        <div className="target-crypto-icon">₿</div>
-        <div className="target-details-col">
-          <div className="target-hash-row">0x7a3f...c9d2e4</div>
+        <div className="target-crypto-icon">{cryptoIcon}</div>
+        <div className="target-details-col" style={{ minWidth: 0 }}>
+          <div className="target-hash-row" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {target}
+          </div>
           <div className="target-tags-row">
-            <span className="crypto-pill">Bitcoin</span>
-            <span className="crypto-pill">Externally Owned</span>
+            <span className="crypto-pill">{chainLabel}</span>
+            <span className="crypto-pill">High Forensic Attention</span>
           </div>
         </div>
         <ExternalLink size={16} color="#94a3b8" />

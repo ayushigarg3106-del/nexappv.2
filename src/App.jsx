@@ -46,26 +46,52 @@ export default function App() {
       case 1:
         return <Screen01_Splash onNavigate={setCurrentScreen} />;
       case 2:
-        return <Screen02_Home onNavigate={setCurrentScreen} />;
+        return (
+          <Screen02_Home 
+            onNavigate={setCurrentScreen} 
+            setQueryAddress={setQueryAddress} 
+          />
+        );
       case 3:
         return (
           <Screen03_Investigate
             onNavigate={setCurrentScreen}
+            queryAddress={queryAddress}
             setQueryAddress={setQueryAddress}
           />
         );
       case 4:
-        return <Screen04_Analyzing onNavigate={setCurrentScreen} />;
+        return (
+          <Screen04_Analyzing 
+            onNavigate={setCurrentScreen} 
+            queryAddress={queryAddress} 
+          />
+        );
       case 5:
-        return <Screen05_Result onNavigate={setCurrentScreen} />;
+        return (
+          <Screen05_Result 
+            onNavigate={setCurrentScreen} 
+            queryAddress={queryAddress} 
+          />
+        );
       case 6:
         return <Screen06_RiskAnalysis onNavigate={setCurrentScreen} />;
       case 7:
-        return <Screen07_TxDetails onNavigate={setCurrentScreen} />;
+        return (
+          <Screen07_TxDetails 
+            onNavigate={setCurrentScreen} 
+            queryAddress={queryAddress} 
+          />
+        );
       case 8:
         return <Screen08_TxFlow onNavigate={setCurrentScreen} />;
       case 9:
-        return <Screen09_AddressDetails onNavigate={setCurrentScreen} />;
+        return (
+          <Screen09_AddressDetails 
+            onNavigate={setCurrentScreen} 
+            queryAddress={queryAddress} 
+          />
+        );
       case 10:
         return <Screen10_Patterns onNavigate={setCurrentScreen} />;
       case 11:

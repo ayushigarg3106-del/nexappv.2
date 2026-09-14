@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Share2, Scan, CheckCircle2, Loader2, Circle, FastForward } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function Screen04_Analyzing({ onNavigate }) {
+export default function Screen04_Analyzing({ onNavigate, queryAddress }) {
   const [progress, setProgress] = useState(58);
   const [activeStepIndex, setActiveStepIndex] = useState(3); // 0-indexed, so step 4 is active initially (58%)
 
@@ -58,7 +58,12 @@ export default function Screen04_Analyzing({ onNavigate }) {
       {/* Title Area */}
       <div className="analyzing-title-area">
         <h2>Analysing Evidence</h2>
-        <p>Turning data into intelligence...</p>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '20px', padding: '4px 12px', marginTop: '6px', maxWidth: '90%', overflow: 'hidden' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', flexShrink: 0 }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: '#1d4ed8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {queryAddress || '0x7a3fc894726e9c9d2e4b0113f89'}
+          </span>
+        </div>
       </div>
 
       {/* 3D Floating Layers Visual */}
