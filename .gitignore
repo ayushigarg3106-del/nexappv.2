@@ -34,3 +34,4 @@ android/app/build/reports/
 android/capacitor-cordova-android-plugins/build/
 android/local.properties
 *.hprof
+*.apk
