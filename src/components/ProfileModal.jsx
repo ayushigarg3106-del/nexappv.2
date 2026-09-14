@@ -28,8 +28,7 @@ export default function ProfileModal({ isOpen, onClose }) {
   const [isEditing, setIsEditing] = useState(false);
   const [savedToast, setSavedToast] = useState(false);
 
-  // Profile Information State
-  const [profile, setProfile] = useState({
+  const defaultProfile = {
     name: 'Ayushi Garg',
     role: 'Lead Blockchain Forensics Investigator',
     badgeId: 'NX-94821',
@@ -40,11 +39,26 @@ export default function ProfileModal({ isOpen, onClose }) {
     joined: 'March 2024',
     clearance: 'Level 4 (Classified Ledger Access)',
     keyFingerprint: '4F9B:E821:90CA:77B2',
+  };
+
+  // Profile Information State with persistent storage
+  const [profile, setProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nexchain_investigator_profile');
+      return saved ? JSON.parse(saved) : defaultProfile;
+    } catch {
+      return defaultProfile;
+    }
   });
 
   const [editForm, setEditForm] = useState({ ...profile });
   const [biometricEnabled, setBiometricEnabled] = useState(true);
   const [threatAlertsEnabled, setThreatAlertsEnabled] = useState(true);
+
+  const handleStartEdit = () => {
+    setEditForm({ ...profile });
+    setIsEditing(true);
+  };
 
   const handleCopyBadge = () => {
     navigator.clipboard?.writeText(profile.badgeId);
@@ -55,6 +69,11 @@ export default function ProfileModal({ isOpen, onClose }) {
   const handleSaveEdit = (e) => {
     e.preventDefault();
     setProfile({ ...editForm });
+    try {
+      localStorage.setItem('nexchain_investigator_profile', JSON.stringify(editForm));
+    } catch (err) {
+      console.error(err);
+    }
     setIsEditing(false);
     setSavedToast(true);
     setTimeout(() => setSavedToast(false), 2500);
