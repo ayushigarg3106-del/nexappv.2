@@ -15,8 +15,8 @@ export default function DeviceFrame({
   const isLightText = currentScreen === 1 || currentScreen === 11;
   const isSplash = currentScreen === 1;
 
-  // Screens that show bottom nav: 2 (Home), 3 (Investigate), 6 (Risk Analysis), 11 (Network Graph)
-  const hasBottomNav = showBottomNav && [2, 3, 6, 11].includes(currentScreen);
+  // Screens that show bottom nav: 2 (Home), 3 (Investigate), 5 (Reports), 6 (Risk Analysis), 11 (Network Graph)
+  const hasBottomNav = showBottomNav && [2, 3, 5, 6, 11].includes(currentScreen);
 
   return (
     <div className="iphone-chassis">

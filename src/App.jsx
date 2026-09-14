@@ -121,7 +121,7 @@ export default function App() {
   const isNative = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform ? window.Capacitor.isNativePlatform() : false;
 
   if (isNative) {
-    const hasBottomNav = [2, 3, 6, 11].includes(currentScreen);
+    const hasBottomNav = [2, 3, 5, 6, 11].includes(currentScreen);
     return (
       <div className="native-app-container" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-app)', position: 'relative', overflow: 'hidden' }}>
         <div
