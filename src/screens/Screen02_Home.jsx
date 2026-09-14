@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, QrCode, ArrowUpRight, ArrowDownRight, AlertTriangle, ShieldCheck, GitCommit, ChevronRight, Layers } from 'lucide-react';
+import ProfileModal from '../components/ProfileModal';
 
 export default function Screen02_Home({ onNavigate }) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const investigations = [
     {
       id: '0x7a3f...c9d2e4',
@@ -58,7 +61,15 @@ export default function Screen02_Home({ onNavigate }) {
           <h2>{greeting}</h2>
           <p>Investigate, Trace, Uncover.</p>
         </div>
-        <div className="home-avatar-btn" onClick={() => onNavigate(12)} title="Open AI Investigator">
+        <div
+          className="home-avatar-btn"
+          id="profile-avatar-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsProfileOpen(true);
+          }}
+          title="Open Investigator Profile"
+        >
           <img
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
             alt="User Profile"
@@ -66,6 +77,9 @@ export default function Screen02_Home({ onNavigate }) {
           <span className="avatar-online-dot" />
         </div>
       </div>
+
+      {/* Mandatory Profile Information Modal */}
+      <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
       {/* Global Search Bar */}
       <div className="home-search-bar" onClick={() => onNavigate(3)} id="home-search-trigger">
