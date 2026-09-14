@@ -1,10 +1,53 @@
 import React, { useState } from 'react';
-import { Search, QrCode, ArrowUpRight, ArrowDownRight, AlertTriangle, ShieldCheck, GitCommit, ChevronRight, Layers, X, ArrowRight, Zap } from 'lucide-react';
+import { Search, QrCode, ArrowUpRight, ArrowDownRight, AlertTriangle, ShieldCheck, GitCommit, ChevronRight, Layers, X, ArrowRight, Zap, SlidersHorizontal, Activity, CheckCircle2 } from 'lucide-react';
 import ProfileModal from '../components/ProfileModal';
+import EditMetricsModal from '../components/EditMetricsModal';
 
 export default function Screen02_Home({ onNavigate, setQueryAddress }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMetricsModalOpen, setIsMetricsModalOpen] = useState(false);
+  const [metricsToast, setMetricsToast] = useState(false);
   const [homeSearchInput, setHomeSearchInput] = useState('');
+
+  // Default forensic metrics
+  const defaultMetrics = {
+    transactions: { val: '12,841', label: 'Transactions', trend: '24%', isUp: true },
+    highRisk: { val: '37', label: 'High Risk', trend: '12%', isUp: true },
+    underReview: { val: '124', label: 'Under Review', trend: '8%', isUp: true },
+    connections: { val: '8,421', label: 'Connections', trend: '31%', isUp: true }
+  };
+
+  // Persistent metrics state with localStorage
+  const [metrics, setMetrics] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nexchain_dashboard_metrics');
+      return saved ? JSON.parse(saved) : defaultMetrics;
+    } catch {
+      return defaultMetrics;
+    }
+  });
+
+  const handleSaveMetrics = (newMetrics) => {
+    setMetrics(newMetrics);
+    try {
+      localStorage.setItem('nexchain_dashboard_metrics', JSON.stringify(newMetrics));
+    } catch (e) {
+      console.error(e);
+    }
+    setMetricsToast(true);
+    setTimeout(() => setMetricsToast(false), 2500);
+  };
+
+  const handleResetMetrics = () => {
+    setMetrics(defaultMetrics);
+    try {
+      localStorage.removeItem('nexchain_dashboard_metrics');
+    } catch (e) {
+      console.error(e);
+    }
+    setMetricsToast(true);
+    setTimeout(() => setMetricsToast(false), 2500);
+  };
 
   const quickForensicChips = [
     { label: 'Mixer Outflow', query: '0x7a3fc894726e9c9d2e4b0113f89', icon: '⚡' },
@@ -97,6 +140,23 @@ export default function Screen02_Home({ onNavigate, setQueryAddress }) {
       {/* Mandatory Profile Information Modal */}
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
+      {/* Dashboard Metrics Editor Modal */}
+      <EditMetricsModal
+        isOpen={isMetricsModalOpen}
+        onClose={() => setIsMetricsModalOpen(false)}
+        metrics={metrics}
+        onSaveMetrics={handleSaveMetrics}
+        onResetMetrics={handleResetMetrics}
+      />
+
+      {/* Toast Confirmation for Metrics Update */}
+      {metricsToast && (
+        <div className="profile-toast-banner" style={{ margin: '6px 0', animation: 'fadeIn 0.2s' }}>
+          <CheckCircle2 size={16} color="#16a34a" />
+          <span>Dashboard metrics updated successfully!</span>
+        </div>
+      )}
+
       {/* Global Interactive Search Bar */}
       <div
         className="home-search-bar"
@@ -173,66 +233,83 @@ export default function Screen02_Home({ onNavigate, setQueryAddress }) {
         ))}
       </div>
 
-      {/* 2x2 Metric Cards Grid */}
+      {/* Forensic Counters Header with Edit Button */}
+      <div className="home-section-header" style={{ marginTop: '10px', marginBottom: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Activity size={15} color="#2563eb" />
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>Forensic Counters</h3>
+        </div>
+        <button 
+          className="home-metrics-edit-trigger"
+          onClick={() => setIsMetricsModalOpen(true)}
+          id="btn-edit-metrics-trigger"
+          title="Edit Metrics"
+        >
+          <SlidersHorizontal size={12} color="#2563eb" />
+          <span>Edit Metrics</span>
+        </button>
+      </div>
+
+      {/* 2x2 Metric Cards Grid with Dynamic State */}
       <div className="home-metrics-grid">
         {/* Card 1: Transactions */}
-        <div className="metric-card" onClick={() => onNavigate(7)}>
+        <div className="metric-card" onClick={() => onNavigate(7)} title="View Transactions">
           <div className="metric-card-top">
             <div className="metric-icon-box blue">
               <Layers size={18} />
             </div>
-            <div className="metric-trend green">
-              <ArrowUpRight size={14} />
-              <span>24%</span>
+            <div className={`metric-trend ${metrics.transactions.isUp ? 'green' : 'red'}`}>
+              {metrics.transactions.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              <span>{metrics.transactions.trend}</span>
             </div>
           </div>
-          <div className="metric-val">12,841</div>
-          <div className="metric-label">Transactions</div>
+          <div className="metric-val">{metrics.transactions.val}</div>
+          <div className="metric-label">{metrics.transactions.label}</div>
         </div>
 
         {/* Card 2: High Risk */}
-        <div className="metric-card" onClick={() => onNavigate(6)}>
+        <div className="metric-card" onClick={() => onNavigate(6)} title="View Risk Analysis">
           <div className="metric-card-top">
             <div className="metric-icon-box red">
               <AlertTriangle size={18} />
             </div>
-            <div className="metric-trend red">
-              <ArrowUpRight size={14} />
-              <span>12%</span>
+            <div className={`metric-trend ${metrics.highRisk.isUp ? 'red' : 'green'}`}>
+              {metrics.highRisk.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              <span>{metrics.highRisk.trend}</span>
             </div>
           </div>
-          <div className="metric-val">37</div>
-          <div className="metric-label">High Risk</div>
+          <div className="metric-val">{metrics.highRisk.val}</div>
+          <div className="metric-label">{metrics.highRisk.label}</div>
         </div>
 
         {/* Card 3: Under Review */}
-        <div className="metric-card" onClick={() => onNavigate(4)}>
+        <div className="metric-card" onClick={() => onNavigate(4)} title="View Cases Under Review">
           <div className="metric-card-top">
             <div className="metric-icon-box orange">
               <ShieldCheck size={18} />
             </div>
-            <div className="metric-trend green">
-              <ArrowUpRight size={14} />
-              <span>8%</span>
+            <div className={`metric-trend ${metrics.underReview.isUp ? 'green' : 'red'}`}>
+              {metrics.underReview.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              <span>{metrics.underReview.trend}</span>
             </div>
           </div>
-          <div className="metric-val">124</div>
-          <div className="metric-label">Under Review</div>
+          <div className="metric-val">{metrics.underReview.val}</div>
+          <div className="metric-label">{metrics.underReview.label}</div>
         </div>
 
         {/* Card 4: Connections */}
-        <div className="metric-card" onClick={() => onNavigate(11)}>
+        <div className="metric-card" onClick={() => onNavigate(11)} title="View Network Graph">
           <div className="metric-card-top">
             <div className="metric-icon-box purple">
               <GitCommit size={18} />
             </div>
             <div className="metric-trend purple">
-              <ArrowUpRight size={14} />
-              <span>31%</span>
+              {metrics.connections.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              <span>{metrics.connections.trend}</span>
             </div>
           </div>
-          <div className="metric-val">8,421</div>
-          <div className="metric-label">Connections</div>
+          <div className="metric-val">{metrics.connections.val}</div>
+          <div className="metric-label">{metrics.connections.label}</div>
         </div>
       </div>
 
