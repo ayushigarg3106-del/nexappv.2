@@ -6,7 +6,7 @@ export default function BottomNavBar({ currentScreen, onNavigate }) {
     { id: 2, label: 'Home', icon: Home },
     { id: 3, label: 'Search', icon: Search },
     { id: 11, label: 'Graph', icon: GitFork },
-    { id: 10, label: 'Reports', icon: FileText },
+    { id: 5, label: 'Reports', icon: FileText },
     { id: 6, label: 'More', icon: Menu },
   ];
 

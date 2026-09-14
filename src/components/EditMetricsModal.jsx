@@ -89,14 +89,14 @@ export default function EditMetricsModal({ isOpen, onClose, metrics, onSaveMetri
   };
 
   return (
-    <div className="profile-modal-overlay" onClick={onClose}>
+    <div className="profile-modal-backdrop" onClick={onClose} style={{ zIndex: 99999 }}>
       <div 
         className="profile-modal-sheet" 
         onClick={(e) => e.stopPropagation()} 
         style={{ maxHeight: '90vh', overflowY: 'auto' }}
       >
         {/* Drag Handle */}
-        <div className="modal-drag-pill" />
+        <div className="profile-modal-drag-handle" />
 
         {/* Modal Header */}
         <div className="profile-modal-header" style={{ marginBottom: '14px' }}>
