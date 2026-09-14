@@ -32,18 +32,36 @@ export default function Screen02_Home({ onNavigate }) {
     },
   ];
 
+  const now = new Date();
+  const hours = now.getHours();
+  let greeting = 'Good morning';
+  if (hours >= 12 && hours < 17) {
+    greeting = 'Good afternoon';
+  } else if (hours >= 17 && hours < 22) {
+    greeting = 'Good evening';
+  } else if (hours >= 22 || hours < 5) {
+    greeting = 'Welcome back';
+  }
+
+  const formattedDate = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
   return (
     <div className="screen-home">
       {/* Top Greeting & User Profile */}
       <div className="home-user-header">
         <div className="home-user-info">
-          <h2>Good Morning, Arnav 👋</h2>
+          <span className="home-date-tag">{formattedDate}</span>
+          <h2>{greeting}</h2>
           <p>Investigate, Trace, Uncover.</p>
         </div>
         <div className="home-avatar-btn" onClick={() => onNavigate(12)} title="Open AI Investigator">
           <img
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
-            alt="Arnav Avatar"
+            alt="User Profile"
           />
           <span className="avatar-online-dot" />
         </div>
